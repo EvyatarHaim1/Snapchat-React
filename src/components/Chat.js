@@ -16,13 +16,15 @@ function Chat({ id, profilePic, username, timestamp, imageUrl, read}) {
     const open = () => {
         if(!read) {
             dispatch(selectImage(imageUrl))
-            db.collection('posts').doc(id).set({
+            db.collection('posts').doc(id).set(
+            {
                 read: true,
-            }, {merge: true})
+            },
+             {merge: true}
+          );
+          history.push('/chats/view')
         };
-
-        history.push('/chats/view')
-    }
+    };
 
     return (
         <Div onClick={open}>
