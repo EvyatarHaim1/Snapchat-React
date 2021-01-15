@@ -8,6 +8,7 @@ import { selectImage } from '../features/appSlice';
 import { db } from '../firebase';
 import { useHistory } from 'react-router-dom';
 
+
 function Chat({ id, profilePic, username, timestamp, imageUrl, read}) {
 
     const dispatch = useDispatch();
@@ -31,10 +32,14 @@ function Chat({ id, profilePic, username, timestamp, imageUrl, read}) {
             <Avatar clasname="chat_avatar" src={profilePic} />
             <div className="chat_info">
                 <h4>{username}</h4>
-                <p> Tap to view - <ReactTimeAgo date={new Date(timestamp?.toDate()).toUTCString()} /></p>
+                <p>
+                    {!read && " Tap to view -"}{" "}
+                    <ReactTimeAgo date={new Date(timestamp?.toDate()).toUTCString()} />
+                </p>
             </div>
 
             {!read && <StopRoundedIcon className="chat_readIcon"/>}
+
         </Div>
     )
 }

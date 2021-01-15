@@ -4,11 +4,19 @@ import { Avatar } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
 import Chat from './Chat';
-import { db } from '../firebase';
+import { db, auth } from '../firebase';
+import { selectUser } from '../features/appSlice';
+import { useSelector, useDispatch } from 'react-redux';
+import  RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
+import { useHistory } from 'react-router-dom';
+import { resetCameraImage } from '../features/cameraSlice';
 
 function Chats() {
 
     const [ posts, setPosts ] = useState();
+    const user = useSelector(selectUser);
+    const dispatch = useDispatch();
+    const history = useHistory();
 
     useEffect(() => {
        db.collection('posts')
@@ -22,12 +30,19 @@ function Chats() {
           })
     }, [])
 
+
+    const takeSnap = () => {
+        dispatch(resetCameraImage());
+       history.push('/');
+
+    }
+
     return (
         <Div>
             <div className="chats_header">
-                <Avatar className="chats_avatar"/>
+                <Avatar src={user.profilePic} onClick={() => auth.signOut()} className="chats_avatar"/>
                 <div className="chats_search">
-                    <SearchIcon />
+                    <SearchIcon className="chats_searchIcon"/>
                     <input placeholder="Friends" type="text"/>
                 </div>
                 <ChatBubbleIcon className="chats_chatIcon"/>
@@ -51,6 +66,13 @@ function Chats() {
                 )
                 )}
             </div>
+
+            <RadioButtonUncheckedIcon 
+               className="chat_takePicIcon"
+               onClick={takeSnap}
+               fontSize='large'
+            />
+            
         </Div> 
     )
 }
@@ -110,5 +132,25 @@ const Div = styled.div`
 
   .chats_posts::-webkit-scrollbar{
       display: none;
+  }
+
+  .chat_takePicIcon {
+      position: absolute;
+      background-color: white;
+      border-radius:2;
+      color: gray;
+      font-size: 40px !important;
+      cursor: pointer;
+      bottom: 0;
+      left: 50%;
+      transform: translate(-50%,-50%);
+      :hover{
+          opacity: 0.8;
+      }
+  }
+
+  .chats_searchIcon{
+      color: white;
+      font-size: 13 !important;
   }
 `
